@@ -10,6 +10,13 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('정말 로그아웃 하시겠습니까?');
+    if (confirmLogout) {
+      logout();
+    }
+  };
+
   return (
     <nav className="border-b">
       <div className="flex h-16 items-center px-4 container">
@@ -46,7 +53,7 @@ export function Navbar() {
               <Link href="/mypage">
                 <Button variant="ghost">마이페이지</Button>
               </Link>
-              <Button variant="outline" onClick={logout}>
+              <Button variant="outline" onClick={handleLogout}>
                 로그아웃
               </Button>
             </>

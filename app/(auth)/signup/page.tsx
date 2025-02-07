@@ -64,15 +64,8 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                또는
-              </span>
-            </div>
+          <div className="flex justify-center py-4">
+            <span className="text-md text-muted-foreground">or</span>
           </div>
 
           <Button
