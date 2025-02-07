@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   // ✅ 현재 로그인된 사용자 확인
   useEffect(() => {
@@ -79,9 +81,86 @@ export function useAuth() {
     }
   };
 
+  // ✅ 이메일 로그인
+  const loginWithEmail = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('로그인 실패:', error.message);
+        alert(`⚠️ 로그인 실패: ${error.message}`);
+        return `⚠️ 로그인 실패: ${error.message}`;
+      }
+
+      router.push('/');
+      router.refresh();
+    } catch (error) {
+      console.error('로그인 오류:', error);
+      alert('⚠️ 로그인 중 오류가 발생했습니다.');
+      return '⚠️ 로그인 중 오류가 발생했습니다.';
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Google 로그인 추가
+  const loginWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/callback` },
+      });
+
+      if (error) {
+        console.error('Google 로그인 실패:', error.message);
+        alert(`⚠️ Google 로그인 실패: ${error.message}`);
+        return `⚠️ Google 로그인 실패: ${error.message}`;
+      }
+
+      alert('✅ Google 로그인 성공!');
+    } catch (error) {
+      console.error('Google 로그인 오류:', error);
+      alert('⚠️ Google 로그인 중 오류가 발생했습니다.');
+      return '⚠️ Google 로그인 중 오류가 발생했습니다.';
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ 로그아웃
+  const logout = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error('로그아웃 실패:', error.message);
+        alert(`⚠️ 로그아웃 실패: ${error.message}`);
+        return;
+      }
+
+      // ✅ 로그아웃 후 홈페이지로 이동
+      router.push('/');
+      router.refresh();
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+      alert('⚠️ 로그아웃 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     user,
     loading,
     registerWithEmail,
+    loginWithEmail,
+    logout,
+    loginWithGoogle,
   };
 }

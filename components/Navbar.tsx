@@ -53,12 +53,12 @@ export function Navbar() {
               <Link href="/mypage">
                 <Button variant="ghost">마이페이지</Button>
               </Link>
-              <Button variant="outline" onClick={handleLogout}>
+              <Button variant="ghost" onClick={handleLogout}>
                 로그아웃
               </Button>
             </>
           ) : (
-            <Button asChild variant="outline">
+            <Button asChild variant="ghost">
               <Link href="/login">로그인</Link>
             </Button>
           )}
